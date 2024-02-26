@@ -70,18 +70,6 @@ optimizer = optim.Adam(list(model_part1.parameters()) + list(model_part2.paramet
 criterion = nn.CrossEntropyLoss()
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-# Initialize model parts and move them to the appropriate device
-model_part1 = ModelPart1().to(device)
-model_part2 = ModelPart2().to(device)
-
-# If you have multiple GPUs, wrap model parts with DataParallel (for data parallelism)
-if torch.cuda.device_count() > 1:
-    model_part1 = nn.DataParallel(model_part1)
-    model_part2 = nn.DataParallel(model_part2)
-
-optimizer = optim.Adam(list(model_part1.parameters()) + list(model_part2.parameters()), lr=0.001)
-criterion = nn.CrossEntropyLoss()
-
 # Training loop
 for epoch in range(5):  # loop over the dataset multiple times
     running_loss = 0.0
@@ -89,7 +77,6 @@ for epoch in range(5):  # loop over the dataset multiple times
         inputs, labels = inputs.to(device), labels.to(device)
 
         optimizer.zero_grad()
-
         # Forward pass through the first part
         part1_output = model_part1(inputs)
 
